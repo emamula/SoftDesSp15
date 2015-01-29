@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Feb  2 11:24:42 2014
+Created on 1/27/15
 
-@author: YOUR NAME HERE
+@author: Emily Mamula
 
 """
 
@@ -30,7 +30,15 @@ def get_complement(nucleotide):
     'G'
     """
     # TODO: implement this
-    pass
+    if nucleotide == 'A':
+        return 'T'
+    if nucleotide == 'C':
+        return 'G'
+    if nucleotide == 'G':
+        return 'C'
+    if nucleotide == 'T':
+        return 'A'
+
 
 def get_reverse_complement(dna):
     """ Computes the reverse complementary sequence of DNA for the specfied DNA
@@ -44,7 +52,19 @@ def get_reverse_complement(dna):
     'TGAACGCGG'
     """
     # TODO: implement this
-    pass
+    x = 0
+    n = len(dna)
+
+    complement = ''
+    reverse_complement = ''
+    
+    for x in range(0,n):
+        complement = get_complement(dna[x])
+        reverse_complement = complement + reverse_complement
+
+    return reverse_complement
+    
+
 
 def rest_of_ORF(dna):
     """ Takes a DNA sequence that is assumed to begin with a start codon and returns
@@ -59,7 +79,22 @@ def rest_of_ORF(dna):
     'ATGAGA'
     """
     # TODO: implement this
-    pass
+    x = 0
+    n = len(dna)
+
+    rest_of_ORF = ''
+
+    '''if dna[3] == 'T':
+        return rest_of_ORF'''
+
+    for x in range(0,n):
+        if (x%3) == 0 and ((dna[x:x+3] == 'TGA') or (dna[x:x+3] == 'TAA') or (dna[x:x+3] == 'TAG')):
+            break
+        rest_of_ORF = rest_of_ORF + dna[x]
+        x = x + 1
+
+    return rest_of_ORF
+
 
 def find_all_ORFs_oneframe(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence and returns
@@ -74,7 +109,18 @@ def find_all_ORFs_oneframe(dna):
     ['ATGCATGAATGTAGA', 'ATGTGCCC']
     """
     # TODO: implement this
-    pass
+    x = 0
+    y = 0
+    n = len(dna)
+
+    find_all_ORFs_oneframe = []
+
+    for x in range(0,n):
+        if (x%3) == 0 and dna[x:x+3] == 'ATG':
+            find_all_ORFs_oneframe.append(rest_of_ORF(dna[x:n]))
+
+    return find_all_ORFs_oneframe
+            
 
 def find_all_ORFs(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence in all 3
@@ -89,7 +135,18 @@ def find_all_ORFs(dna):
     ['ATGCATGAATGTAG', 'ATGAATGTAG', 'ATG']
     """
     # TODO: implement this
-    pass
+    x = 0
+    y = 0
+    n = len(dna)
+
+    find_all_ORFs = []
+
+    for x in range(0,n):
+        if dna[x:x+3] == 'ATG':
+            find_all_ORFs.append(rest_of_ORF(dna[x:n]))
+
+    return find_all_ORFs
+
 
 def find_all_ORFs_both_strands(dna):
     """ Finds all non-nested open reading frames in the given DNA sequence on both
@@ -98,10 +155,21 @@ def find_all_ORFs_both_strands(dna):
         dna: a DNA sequence
         returns: a list of non-nested ORFs
     >>> find_all_ORFs_both_strands("ATGCGAATGTAGCATCAAA")
-    ['ATGCGAATG', 'ATGCTACATTCGCAT']
+    ['ATGCGAATG', 'ATGCTACATTCGCAT', 'ATG']
     """
     # TODO: implement this
-    pass
+    find_all_ORFs_both_strands = []
+    x = 0
+    n = len(dna)
+    dna_complement = get_reverse_complement(dna)
+
+    for x in range(0,n):
+        if dna[x:x+3] == 'ATG':
+            find_all_ORFs_both_strands.append(rest_of_ORF(dna[x:n]))
+        if dna_complement[x:x+3] == 'ATG':
+            find_all_ORFs_both_strands.append(rest_of_ORF(dna_complement[x:n]))
+
+    return find_all_ORFs_both_strands
 
 
 def longest_ORF(dna):
@@ -111,8 +179,22 @@ def longest_ORF(dna):
     'ATGCTACATTCGCAT'
     """
     # TODO: implement this
-    pass
+    all_ORFs = find_all_ORFs_both_strands(dna)
 
+    x = 0
+    n = len(all_ORFs)
+    longest_ORF = [all_ORFs[0]]
+
+    for x in range(1,n):
+        if len(longest_ORF[0]) == len(all_ORFs[x]):
+            longest_ORF.append(all_ORFs[x])
+        if len(longest_ORF[0]) < len(all_ORFs[x]):
+            longest_ORF = [all_ORFs[x]]
+
+    if len(longest_ORF) == 1:
+        return longest_ORF[0]
+    else:
+        return longest_ORF
 
 def longest_ORF_noncoding(dna, num_trials):
     """ Computes the maximum length of the longest ORF over num_trials shuffles
@@ -153,6 +235,18 @@ def gene_finder(dna, threshold):
     """
     # TODO: implement this
     pass
+    gene_finder = []
+    x = 0
+
+    all_ORFs = find_all_ORFs(dna)
+    n = len(all_ORFs)
+
+    for x in range(0,n):
+        if len(all_ORFs[x]) > threshold:
+            #DO AMINO ACIDS
+            gene_finder.append('Amino acids')
+
+    print gene_finder
 
 if __name__ == "__main__":
     import doctest
