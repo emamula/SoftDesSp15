@@ -1,0 +1,5 @@
+Edge case:
+
+Start codon only in rest_of_ORF vs find_all_ORFS
+
+Longest ORF if same size
