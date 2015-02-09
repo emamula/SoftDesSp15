@@ -55,14 +55,12 @@ def get_reverse_complement(dna):
     x = 0
     n = len(dna)
 
-    complement = ''
-    reverse_complement = ''
+    result = ''
     
     for x in range(0,n):
-        complement = get_complement(dna[x])
-        reverse_complement = complement + reverse_complement
+        result = get_complement(dna[x]) + result
 
-    return reverse_complement
+    return result
     
 
 
@@ -82,18 +80,14 @@ def rest_of_ORF(dna):
     x = 0
     n = len(dna)
 
-    rest_of_ORF = ''
-
-    '''if dna[3] == 'T':
-        return rest_of_ORF'''
+    result = ''
 
     for x in range(0,n):
-        if (x%3) == 0 and ((dna[x:x+3] == 'TGA') or (dna[x:x+3] == 'TAA') or (dna[x:x+3] == 'TAG')):
+        if (x%3) == 0 and dna[x:x+3] in ['TGA', 'TAA', 'TAG']:
             break
-        rest_of_ORF = rest_of_ORF + dna[x]
-        x = x + 1
+        result = result + dna[x]
 
-    return rest_of_ORF
+    return result
 
 
 def find_all_ORFs_oneframe(dna):
@@ -110,16 +104,18 @@ def find_all_ORFs_oneframe(dna):
     """
     # TODO: implement this
     x = 0
-    y = 0
     n = len(dna)
 
-    find_all_ORFs_oneframe = []
+    result = []
 
-    for x in range(0,n):
+    while x < n:
         if (x%3) == 0 and dna[x:x+3] == 'ATG':
-            find_all_ORFs_oneframe.append(rest_of_ORF(dna[x:n]))
+            result.append(rest_of_ORF(dna[x:n]))
+            x += len(rest_of_ORF(dna[x:n]))
+        else:
+            x += 1
 
-    return find_all_ORFs_oneframe
+    return result
             
 
 def find_all_ORFs(dna):
@@ -135,17 +131,32 @@ def find_all_ORFs(dna):
     ['ATGCATGAATGTAG', 'ATGAATGTAG', 'ATG']
     """
     # TODO: implement this
+    n = len(dna) #3
     x = 0
     y = 0
-    n = len(dna)
+    z = 0
 
-    find_all_ORFs = []
+    result = []
+    frame1 = find_all_ORFs_oneframe(dna[0:n])
+    n1 = len(frame1)
+    frame2 = find_all_ORFs_oneframe(dna[1:n])
+    n2 = len(frame2)
+    frame3 = find_all_ORFs_oneframe(dna[2:n])
+    n3 = len(frame3)
 
-    for x in range(0,n):
-        if dna[x:x+3] == 'ATG':
-            find_all_ORFs.append(rest_of_ORF(dna[x:n]))
+    for x in range(0,n1):
+        if (frame1[x]) != '':
+            result.append(frame1[x])
+    
+    for y in range(0,n2):
+        if (frame2[y]) != '':
+            result.append(frame2[y])
+    
+    for z in range(0,n3):
+        if (frame3) != '':
+            result.append(frame3[z])
 
-    return find_all_ORFs
+    return result
 
 
 def find_all_ORFs_both_strands(dna):
@@ -155,21 +166,38 @@ def find_all_ORFs_both_strands(dna):
         dna: a DNA sequence
         returns: a list of non-nested ORFs
     >>> find_all_ORFs_both_strands("ATGCGAATGTAGCATCAAA")
-    ['ATGCGAATG', 'ATGCTACATTCGCAT', 'ATG']
+    ['ATGCGAATG', 'ATGCTACATTCGCAT']
     """
     # TODO: implement this
-    find_all_ORFs_both_strands = []
+    result = []
     x = 0
+    y = 0
     n = len(dna)
-    dna_complement = get_reverse_complement(dna)
+    dna_complement = get_reverse_complement(dna[0:n])
+    #print(dna_complement)
+    
+    dna_ORFs = find_all_ORFs(dna[0:n])
+    #print(dna_ORFs) 
 
-    for x in range(0,n):
+    dna_complement_ORFs = find_all_ORFs(dna_complement[0:n])
+    #print(dna_complement_ORFs)
+
+    n1 = len(dna_ORFs)
+    n2 = len(dna_complement_ORFs)
+
+    for x in range(0,n1):
+        result.append(dna_ORFs[x])
+
+    for y in range(0,n2):
+        result.append(dna_complement_ORFs[y])
+
+    '''for x in range(0,n):
         if dna[x:x+3] == 'ATG':
-            find_all_ORFs_both_strands.append(rest_of_ORF(dna[x:n]))
+            result.append(rest_of_ORF(dna[x:n]))
         if dna_complement[x:x+3] == 'ATG':
-            find_all_ORFs_both_strands.append(rest_of_ORF(dna_complement[x:n]))
+            result.append(rest_of_ORF(dna_complement[x:n]))'''
 
-    return find_all_ORFs_both_strands
+    return result
 
 
 def longest_ORF(dna):
@@ -183,18 +211,18 @@ def longest_ORF(dna):
 
     x = 0
     n = len(all_ORFs)
-    longest_ORF = [all_ORFs[0]]
+    result = [all_ORFs[0]]
 
     for x in range(1,n):
-        if len(longest_ORF[0]) == len(all_ORFs[x]):
-            longest_ORF.append(all_ORFs[x])
-        if len(longest_ORF[0]) < len(all_ORFs[x]):
-            longest_ORF = [all_ORFs[x]]
+        if len(result[0]) == len(all_ORFs[x]):
+            result.append(all_ORFs[x])
+        if len(result[0]) < len(all_ORFs[x]):
+            result = [all_ORFs[x]]
 
-    if len(longest_ORF) == 1:
-        return longest_ORF[0]
+    if len(result) == 1:
+        return result[0]
     else:
-        return longest_ORF
+        return result
 
 def longest_ORF_noncoding(dna, num_trials):
     """ Computes the maximum length of the longest ORF over num_trials shuffles
@@ -204,7 +232,19 @@ def longest_ORF_noncoding(dna, num_trials):
         num_trials: the number of random shuffles
         returns: the maximum length longest ORF """
     # TODO: implement this
-    pass
+    x = 0
+    shuff = ''
+    longest_round = 0
+    result = 0
+
+    for x in range (0,num_trials):
+        shuff = random.shuffle(dna)
+        longest_round = len(longest_ORF(shuff))
+        if longest_round > result:
+            result = longest_round
+
+    return result
+    
 
 def coding_strand_to_AA(dna):
     """ Computes the Protein encoded by a sequence of DNA.  This function
@@ -221,9 +261,18 @@ def coding_strand_to_AA(dna):
         'MPA'
     """
     # TODO: implement this
-    pass
+    n = len(dna)
+    x = 0
+    amino_acids = ''
+    extras = len(dna)%3
 
-def gene_finder(dna, threshold):
+    for x in range(0,(n-extras),3):
+        amino_acids += aa_table[dna[x:x+3]]
+
+    return amino_acids
+
+
+def gene_finder(dna):
     """ Returns the amino acid sequences coded by all genes that have an ORF
         larger than the specified threshold.
         
@@ -234,19 +283,18 @@ def gene_finder(dna, threshold):
                  length specified.
     """
     # TODO: implement this
-    pass
-    gene_finder = []
+    threshold = longest_ORF_noncoding(dna,1500)
+    result = []
     x = 0
 
-    all_ORFs = find_all_ORFs(dna)
+    all_ORFs = find_all_ORFs_both_strands(dna)
     n = len(all_ORFs)
 
     for x in range(0,n):
         if len(all_ORFs[x]) > threshold:
-            #DO AMINO ACIDS
-            gene_finder.append('Amino acids')
+            result.append(coding_strand_to_AA(all_ORFs[x]))
 
-    print gene_finder
+    return result
 
 if __name__ == "__main__":
     import doctest
