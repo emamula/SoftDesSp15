@@ -234,11 +234,13 @@ def longest_ORF_noncoding(dna, num_trials):
     # TODO: implement this
     x = 0
     shuff = ''
+    l = list(dna)
     longest_round = 0
     result = 0
 
     for x in range (0,num_trials):
-        shuff = random.shuffle(dna)
+        random.shuffle(l)
+        shuff = ''.join(l)
         longest_round = len(longest_ORF(shuff))
         if longest_round > result:
             result = longest_round
@@ -272,7 +274,7 @@ def coding_strand_to_AA(dna):
     return amino_acids
 
 
-def gene_finder(dna):
+def gene_finder(dna,threshold):
     """ Returns the amino acid sequences coded by all genes that have an ORF
         larger than the specified threshold.
         
