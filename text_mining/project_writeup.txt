@@ -1,0 +1,48 @@
+Emily Mamula
+SoftDes Spring 2015
+Mini-Project 3: Text Mining and Analysis
+
+Project Overview:
+For my project I chose to work with a text from Project Gutenberg, specifically
+Pride and Prejudice by Jane Austen to start. It then uses libraries from the
+National Language Tool Kit and sentiment analysis from patterns to parse the 
+entire text, find references to a specific character throughout and plot those
+sentiment values over the course of the text. The original concept was to analyze
+sentiment towards Mr. Darcy.
+
+
+Implementation:
+The goal of this code was to parse the text and separate all sentences for
+processing. This involves collecting everything between punctuation that ends a
+sentence. This is difficult because the text from Project Gutenberg includes a 
+lot of new lines and many abbreviations with periods, both of which have to be 
+considered to make the text easy to analyze.
+
+Using the National Language Tool Kit, I collected all of the sentences within 
+the text as separate entities to be analyzed. It splits at end-of-sentence 
+punctuation, but without confusion from abbreviations (e.g. Mr., Mrs., etc.).
+Once these sentences are collected and stripped of all non-text entities, I
+cycle through all of them searching for references to the input character name.
+Finally, the sentiment of the sentences where the character is mentioned are 
+analyzed for sentiment using patterns and plotted in relation to their location
+within the text.
+
+The decision to use NLTK was based on its ability to cleanly separate the text.
+I tried other methods that didn't handle abbreviations well or couldn't
+efficiently get rid of new lines. NLTK ended up being the best option that I 
+found.
+
+
+Results:
+My original concept with this was to analyze Pride and Prejudice for sentiments 
+pertaining to Mr. Darcy, a main love interest who also happens to be a massive 
+jerk. To this end, I plotted the sentiment of sentences referencing him 
+throughout the text, assuming I would see a lot of negative feelings. This 
+seems to track, as many of the references to him were negative.
+
+
+Reflection:
+A lot of my problems came from parsing the text. I tried more and less manual 
+approaches before finally settling on NLTK. Overall, this project felt like 
+filler to me, and I just really didn't connect with it. So while I managed to 
+do something cool, I wasn't really into it. 
