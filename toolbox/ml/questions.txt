@@ -1,0 +1,28 @@
+Machine Learning
+
+Emily Mamula
+
+1. What is the general trend in the curve?
+
+The overall accuracy increases with the percentage of data used for training.
+This means the curve increases. It's also concave down because the rate of
+accuracy increase is reduced as the percentage of data used increases.
+
+
+2. Are there parts of the curve that appear to be noisier than others?  Why?
+
+The graph is noisier when a higher percentage of the data is used in training.
+This is probably because the closer the accuracy gets to 100%, the more drastic
+small variations in accuracy will appear in relation (i.e. an especially 
+accurate or inaccurate result will be very noisy in comparison to the others.
+
+
+3. How many trials do you need to get a smooth curve?
+
+I tested up to 70 trials, but the graph looked about as smooth from ~50 plus 
+trials. Further increase may smooth it out a bit more, but I doubt by much.
+
+
+4. Try different values for C.  What happens?
+
+When higher values of C are used, the accuracy reaches a higher maximum.
